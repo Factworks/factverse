@@ -6,14 +6,10 @@
 #' PAT to the function. Create the PAT with new_PAT.
 #' @param repository_name name of the repository that contains the package list
 #' @param file_path path to the yaml file in the repository that contains the package list
-#' @param silent if set to TRUE, no information about installed vs. not installed packages
-#' is printed
 #' @returns list with available packages
 #' @import gh
 #' @importFrom base64enc base64decode
-#' @importFrom utils installed.packages
 #' @importFrom methods is
-#' @import cli
 #' @export
 #' @examples
 #' \dontrun{
@@ -22,8 +18,7 @@
 #' }
 get_available_packages <- function(gh_pat = get_gh_pat(silent = TRUE),
                                    repository_name = "package_list",
-                                   file_path = "packages.yaml",
-                                   silent = FALSE){
+                                   file_path = "packages.yaml"){
 
   available_packages <- list()
   for(account in names(gh_pat)){
@@ -43,22 +38,40 @@ get_available_packages <- function(gh_pat = get_gh_pat(silent = TRUE),
   }
   available_packages <- available_packages[sapply(available_packages, length) > 0]
 
-  if(!silent){
-    installed_packages <- rownames(installed.packages())
 
-    for(account in names(available_packages)){
-      cli::cli_inform(message = paste0("Packages available from ", account, " that are already installed:"))
-      for(pkg in available_packages[[account]]$packages[available_packages[[account]]$packages %in% installed_packages]){
-        cli::cli_alert_success(pkg)
-      }
-      cli::cli_inform(message = paste0("Packages available from ", account, " that are not installed:"))
-      for(pkg in available_packages[[account]]$packages[!available_packages[[account]]$packages %in% installed_packages]){
-        cli::cli_alert_danger(pkg)
-      }
-    }
-  }
+
+  class(available_packages) <- "AvailablePackages"
 
   return(available_packages)
+}
+
+#' print.AvailablePackages
+#'
+#' Print the output from get_available_packages
+#' @param x output from get_available_packages
+#' @param ... not used
+#' @importFrom utils installed.packages
+#' @import cli
+#' @export
+#' @examples
+#' \dontrun{
+#' library(factverse)
+#' get_available_packages()
+#' }
+print.AvailablePackages <- function(x, ...){
+
+  installed_packages <- rownames(installed.packages())
+
+  for(account in names(x)){
+    cli::cli_inform(message = paste0("Packages available from ", account, " that are already installed:"))
+    for(pkg in x[[account]]$packages[x[[account]]$packages %in% installed_packages]){
+      cli::cli_alert_success(pkg)
+    }
+    cli::cli_inform(message = paste0("Packages available from ", account, " that are not installed:"))
+    for(pkg in x[[account]]$packages[!x[[account]]$packages %in% installed_packages]){
+      cli::cli_alert_danger(pkg)
+    }
+  }
 }
 
 #' check_for_updates
@@ -82,8 +95,7 @@ get_available_packages <- function(gh_pat = get_gh_pat(silent = TRUE),
 check_for_updates <- function(gh_pat = get_gh_pat(silent = TRUE),
                               packages = get_available_packages(gh_pat = get_gh_pat(silent = TRUE),
                                                                 repository_name = "package_list",
-                                                                file_path = "packages.yaml",
-                                                                silent = TRUE),
+                                                                file_path = "packages.yaml"),
                               return_package_list = FALSE){
 
 
@@ -165,8 +177,7 @@ install_package <- function(package_name,
                             gh_pat = get_gh_pat(silent = TRUE),
                             packages = get_available_packages(gh_pat = get_gh_pat(silent = TRUE),
                                                               repository_name = "package_list",
-                                                              file_path = "packages.yaml",
-                                                              silent = TRUE)){
+                                                              file_path = "packages.yaml")){
 
   account <- sapply(packages, function(x) package_name %in% x$packages)
   account <- names(account)[account]
@@ -195,8 +206,7 @@ install_package <- function(package_name,
 install_essentials <- function(gh_pat = get_gh_pat(silent = TRUE),
                                packages = get_available_packages(gh_pat = get_gh_pat(silent = TRUE),
                                                                  repository_name = "package_list",
-                                                                 file_path = "packages.yaml",
-                                                                 silent = TRUE)){
+                                                                 file_path = "packages.yaml")){
 
   for(account in names(packages)){
     for(essential in packages[[account]]$essential){
@@ -224,8 +234,7 @@ install_essentials <- function(gh_pat = get_gh_pat(silent = TRUE),
 update_packages <- function(gh_pat = get_gh_pat(silent = TRUE),
                             packages = get_available_packages(gh_pat = get_gh_pat(silent = TRUE),
                                                               repository_name = "package_list",
-                                                              file_path = "packages.yaml",
-                                                              silent = TRUE)){
+                                                              file_path = "packages.yaml")){
 
   pkg_list <- check_for_updates(gh_pat = gh_pat,
                                 packages = packages,

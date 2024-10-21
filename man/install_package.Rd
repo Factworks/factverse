@@ -8,7 +8,7 @@ install_package(
   package_name,
   gh_pat = get_gh_pat(silent = TRUE),
   packages = get_available_packages(gh_pat = get_gh_pat(silent = TRUE), repository_name =
-    "package_list", file_path = "packages.yaml", silent = TRUE)
+    "package_list", file_path = "packages.yaml")
 )
 }
 \arguments{

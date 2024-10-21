@@ -7,8 +7,7 @@
 get_available_packages(
   gh_pat = get_gh_pat(silent = TRUE),
   repository_name = "package_list",
-  file_path = "packages.yaml",
-  silent = FALSE
+  file_path = "packages.yaml"
 )
 }
 \arguments{
@@ -19,9 +18,6 @@ PAT to the function. Create the PAT with new_PAT.}
 \item{repository_name}{name of the repository that contains the package list}
 
 \item{file_path}{path to the yaml file in the repository that contains the package list}
-
-\item{silent}{if set to TRUE, no information about installed vs. not installed packages
-is printed}
 }
 \value{
 list with available packages
