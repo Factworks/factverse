@@ -63,13 +63,20 @@ print.AvailablePackages <- function(x, ...){
   installed_packages <- rownames(installed.packages())
 
   for(account in names(x)){
-    cli::cli_inform(message = paste0("Packages available from ", account, " that are already installed:"))
-    for(pkg in x[[account]]$packages[x[[account]]$packages %in% installed_packages]){
-      cli::cli_alert_success(pkg)
+    pkg_installed <- x[[account]]$packages[x[[account]]$packages %in% installed_packages]
+    pkg_not_installed <- x[[account]]$packages[!x[[account]]$packages %in% installed_packages]
+    if(length(pkg_installed) > 0){
+      cli::cli_inform(message = paste0("Packages available from ", account, " that are already installed:"))
+      for(pkg in pkg_installed){
+        cli::cli_alert_success(pkg)
+      }
     }
-    cli::cli_inform(message = paste0("Packages available from ", account, " that are not installed:"))
-    for(pkg in x[[account]]$packages[!x[[account]]$packages %in% installed_packages]){
-      cli::cli_alert_danger(pkg)
+
+    if(length(pkg_not_installed) > 0){
+      cli::cli_inform(message = paste0("Packages available from ", account, " that are not installed:"))
+      for(pkg in pkg_not_installed){
+        cli::cli_alert_danger(pkg)
+      }
     }
   }
 }

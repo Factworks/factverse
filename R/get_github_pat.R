@@ -1,10 +1,21 @@
-#' get_home_directory
+#' get_R_directory
 #'
-#' Get the home directory irrespective of the operating system used.
-#' @returns string with home directory path
+#' Get the R directory where R packages are installed. By default, this
+#' will look for the installation in AppData. If this is not found, it uses
+#' the first result. If the directory is ~/AppData/Local/R/win-library/4.4,
+#' this function will return AppData/Local/R/
+#' @returns string with path to the R folder
 #' @keywords internal
-get_home_directory <- function(){
-  return(path.expand("~"))
+get_R_directory <- function(){
+  paths <- .libPaths()
+  if(any(grepl(pattern = "AppData", paths))){
+    path <- paths[grepl(pattern = "AppData", paths)]
+  }else{
+    path <- paths[1]
+  }
+  # Only go to the R folder
+  path <- gsub(pattern = "/R/.+$", replacement = "/R", x = path)
+  return(path)
 }
 
 #' get_pat_file_path
@@ -17,7 +28,7 @@ get_home_directory <- function(){
 #' @keywords internal
 get_pat_file_path <- function(folder_name = ".RSecrets",
                               file_name = "RSecrets.yaml"){
-  return(paste0(get_home_directory(), "/", folder_name, "/", file_name))
+  return(paste0(get_R_directory(), "/", folder_name, "/", file_name))
 }
 
 #' get_gh_pat
