@@ -26,7 +26,7 @@ As the `factverse` package has to access private GitHub repositories,
 users first have to authenticate themselves with a GitHub Private Access
 Token (PAT). These tokens can be generated on GitHub (see below). The
 `factverse` package assumes that the PAT to access GitHub is saved in
-the home directory in the following folder: `~.RSecrets/RSecrets.yaml`
+the following folder: `.../AppData/Local/R/.RSecrets/RSecrets.yaml`
 (note that the file is in the hidden `.RSecrets` directory). The
 `RSecrets.yaml` file must be a YAML file and contain the following
 section somewhere within it:
@@ -64,8 +64,8 @@ selected GitHub repositories. Therefore, it should be treated as a
 password and kept a secret.
 
 Once the PAT has been created, add the PAT to the file above
-(`~.RSecrets/RSecrets.yaml`). To update the file, add the new PAT as
-follows:
+(`.../AppData/Local/R/.RSecrets/RSecrets.yaml`). To update the file, add
+the new PAT as follows:
 
     GitHub:
       Account_name_1:
@@ -117,9 +117,10 @@ The main functions of the `factverse` package are as follows.
 
 ### Retrieve the API key for Github
 
-The `factverse` package will search for the `~.RSecrets/RSecrets.yaml`
-file outlined above and return the first GitHub Key it finds that is
-still valid. This is achieved with the `get_gh_pat()` function.
+The `factverse` package will search for the
+`.../AppData/Local/R/.RSecrets/RSecrets.yaml` file outlined above and
+return the first GitHub Key it finds that is still valid. This is
+achieved with the `get_gh_pat()` function.
 
 ``` r
 library(factverse)
@@ -134,8 +135,9 @@ get_gh_pat()
 
 ### Get Available Packages
 
-Given the API key is saved in `~.RSecrets/RSecrets.yaml`, `factverse`
-can now download a list of all available packages from the package_list
+Given the API key is saved in
+`.../AppData/Local/R/.RSecrets/RSecrets.yaml`, `factverse` can now
+download a list of all available packages from the package_list
 repository (see above). To this end, we use the following function:
 
 ``` r
