@@ -18,4 +18,13 @@ the path of the file with the secrets
 Retrieves the path of the file that stores the secrets (access tokens) for
 GitHub.
 }
+\details{
+factverse looks in three locations for the file with the PAT:
+
+1) in the current working directory
+2) (only for windows) in AppData/Local/R
+3) in the home directory
+
+It will return the first match it finds.
+}
 \keyword{internal}

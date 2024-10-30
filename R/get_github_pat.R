@@ -1,34 +1,45 @@
-#' get_R_directory
-#'
-#' Get the R directory where R packages are installed. By default, this
-#' will look for the installation in AppData. If this is not found, it uses
-#' the first result. If the directory is ~/AppData/Local/R/win-library/4.4,
-#' this function will return AppData/Local/R/
-#' @returns string with path to the R folder
-#' @keywords internal
-get_R_directory <- function(){
-  paths <- .libPaths()
-  if(any(grepl(pattern = "AppData", paths))){
-    path <- paths[grepl(pattern = "AppData", paths)]
-  }else{
-    path <- paths[1]
-  }
-  # Only go to the R folder
-  path <- gsub(pattern = "/R/.+$", replacement = "/R", x = path)
-  return(path)
-}
-
 #' get_pat_file_path
 #'
 #' Retrieves the path of the file that stores the secrets (access tokens) for
 #' GitHub.
+#'
+#' factverse looks in three locations for the file with the PAT:
+#'
+#' 1) in the current working directory
+#' 2) (only for windows) in AppData/Local/R
+#' 3) in the home directory
+#'
+#' It will return the first match it finds.
+#'
 #' @param folder_name specify the name of the folder in which the secrets file is stored
 #' @param file_name specify the name of the file in which the secrets are stored
 #' @returns the path of the file with the secrets
 #' @keywords internal
 get_pat_file_path <- function(folder_name = ".RSecrets",
                               file_name = "RSecrets.yaml"){
-  return(paste0(get_R_directory(), "/", folder_name, "/", file_name))
+  # Check working directory
+  w_dir <- paste0(getwd(), "/", folder_name, "/", file_name)
+  home_dir <- paste0("~/", folder_name, "/", file_name)
+
+  if(file.exists(w_dir)){
+    return(w_dir)
+  }
+
+  if(.Platform$OS.type == "windows"){
+    win_paths <- .libPaths()
+    win_paths <- gsub(pattern = "/R/.+$", replacement = "/R", x = win_paths)
+    for(win_path in win_paths){
+      if(file.exists(paste0(win_path, "/", folder_name, "/", file_name))){
+        return(paste0(win_path, "/", folder_name, "/", file_name))
+      }
+    }
+  }
+
+  if(file.exists(home_dir)){
+    return(home_dir)
+  }
+
+  stop("Could not find the file with the GitHub API key. Please contact IT.")
 }
 
 #' get_gh_pat
