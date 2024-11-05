@@ -4,12 +4,16 @@
 \alias{get_pat_file_path}
 \title{get_pat_file_path}
 \usage{
-get_pat_file_path(folder_name = ".RSecrets", file_name = "RSecrets.yaml")
+get_pat_file_path(
+  folder_name = ".RSecrets",
+  file_name_pattern =
+    "Factverse_Secrets_\\\\d{4}\\\\-(0?[1-9]|1[012])\\\\-(0?[1-9]|[12][0-9]|3[01]).yaml"
+)
 }
 \arguments{
 \item{folder_name}{specify the name of the folder in which the secrets file is stored}
 
-\item{file_name}{specify the name of the file in which the secrets are stored}
+\item{file_name_pattern}{specify the pattern of the file in which the secrets are stored}
 }
 \value{
 the path of the file with the secrets
