@@ -8,11 +8,11 @@ test_that("Reading GH PAT Works", {
 
   dir.create(".RSecrets")
   file.copy(from = test_yaml,
-            to = paste0(getwd(), "/.RSecrets/Factverse_Secrets_", Sys.Date(), ".yaml"))
+            to = paste0(getwd(), "/.RSecrets/RSecrets.yaml"))
 
   path_to_pat <- factverse:::get_pat_file_path()
 
-  testthat::expect_true(path_to_pat == paste0(getwd(), "/.RSecrets/Factverse_Secrets_", Sys.Date(), ".yaml"))
+  testthat::expect_true(path_to_pat == paste0(getwd(), "/.RSecrets/RSecrets.yaml"))
 
   # Locate the test files
   test_files <- system.file("extdata", package = "factverse")
