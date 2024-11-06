@@ -28,23 +28,18 @@ Token (PAT). These tokens can be generated on GitHub (see below). The
 `factverse` package assumes that the PAT to access GitHub is saved in
 the one of the following folders:
 
-1.  In the current working directory in
-    `.RSecrets/Factverse_Secrets_YYYY-MM-DD.yaml`
-2.  (Windows only) at
-    `.../AppData/Local/R/.RSecrets/Factverse_Secrets_YYYY-MM-DD.yaml`
-3.  In the home directory at
-    `~/.RSecrets/Factverse_Secrets_YYYY-MM-DD.yaml`
+1.  In the current working directory in `.RSecrets/RSecrets.yaml`
+2.  (Windows only) at `.../AppData/Local/R/.RSecrets/RSecrets.yaml`
+3.  In the home directory at `~/.RSecrets/RSecrets.yaml`
 
 > Note that the file is in the hidden `.RSecrets` directory.
 
 When looking for the file, `factverse` will go through the directories
-in the order outlined above. If it finds a
-`.RSecrets/Factverse_Secrets_YYYY-MM-DD.yaml`, it uses that file. If
-there are multiple files that differ in the date `YYYY-MM-DD`, the
-package will use the latest one.
+in the order outlined above. If it finds a `.RSecrets/RSecrets.yaml`, it
+uses that file.
 
-The `Factverse_Secrets_YYYY-MM-DD.yaml` file must be a YAML file and
-contain the following section somewhere within it:
+The `RSecrets.yaml` file must be a YAML file and contain the following
+section somewhere within it:
 
     GitHub:
       Account_name_1:
@@ -79,8 +74,8 @@ selected GitHub repositories. Therefore, it should be treated as a
 password and kept a secret.
 
 Once the PAT has been created, add the PAT to the file above (e.g.,
-`.../AppData/Local/R/.RSecrets/Factverse_Secrets_YYYY-MM-DD.yaml`). To
-update the file, add the new PAT as follows:
+`.../AppData/Local/R/.RSecrets/RSecrets.yaml`). To update the file, add
+the new PAT as follows:
 
     GitHub:
       Account_name_1:
@@ -132,10 +127,9 @@ The main functions of the `factverse` package are as follows.
 
 ### Retrieve the API key for Github
 
-The `factverse` package will search for the
-`Factverse_Secrets_YYYY-MM-DD.yaml` file outlined above and return the
-first GitHub Key it finds that is still valid. This is achieved with the
-`get_gh_pat()` function.
+The `factverse` package will search for the `RSecrets.yaml` file
+outlined above and return the first GitHub Key it finds that is still
+valid. This is achieved with the `get_gh_pat()` function.
 
 ``` r
 library(factverse)

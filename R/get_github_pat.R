@@ -1,26 +1,3 @@
-#' get_latest
-#'
-#' Extracts the latest file from a list of yaml files that follow the naming
-#' pattern xyz-YYYY-MM-DD.yaml based on the date in the name.
-#'
-#' @param files vector with the files that should be checked
-#' @returns a single string with the name of the latest file
-#' @keywords internal
-#' @importFrom stringr str_extract
-#' @examples
-#' library(factverse)
-#' factverse:::get_latest(c("Factverse_Secrets_2023-11-01.yaml",
-#'                          "Factverse_Secrets_2024-11-01.yaml",
-#'                          "Factverse_Secrets_2024-10-01.yaml",
-#'                          "Factverse_Secrets_2024-1-1.yaml"))
-get_latest <- function(files){
-  if(length(files == 1))
-    return(files)
-  date <- as.Date(stringr::str_extract(string = files,
-                                       pattern = "\\d{4}\\-(0?[1-9]|1[012])\\-(0?[1-9]|[12][0-9]|3[01]).yaml$"))
-  return(files[which.max(date)])
-}
-
 #' get_pat_file_path
 #'
 #' Retrieves the path of the file that stores the secrets (access tokens) for
@@ -35,33 +12,31 @@ get_latest <- function(files){
 #' It will return the first match it finds.
 #'
 #' @param folder_name specify the name of the folder in which the secrets file is stored
-#' @param file_name_pattern specify the pattern of the file in which the secrets are stored
+#' @param file_name specify the name of the file in which the secrets are stored
 #' @returns the path of the file with the secrets
 #' @keywords internal
 get_pat_file_path <- function(folder_name = ".RSecrets",
-                              file_name_pattern = "Factverse_Secrets_\\d{4}\\-(0?[1-9]|1[012])\\-(0?[1-9]|[12][0-9]|3[01]).yaml"){
+                              file_name = "RSecrets.yaml"){
   # Check working directory
-  w_dir <- paste0(getwd(), "/", folder_name, "/")
-  home_dir <- paste0("~/", folder_name, "/")
+  w_dir <- paste0(getwd(), "/", folder_name, "/", file_name)
+  home_dir <- paste0("~/", folder_name, "/", file_name)
 
-  if(length(list.files(w_dir, pattern = file_name_pattern)) > 0){
-    return(paste0(w_dir, get_latest(list.files(w_dir, pattern = file_name_pattern))))
+  if(file.exists(w_dir)){
+    return(w_dir)
   }
 
   if(.Platform$OS.type == "windows"){
     win_paths <- .libPaths()
     win_paths <- gsub(pattern = "/R/.+$", replacement = "/R", x = win_paths)
-    for(win_path in paste0(win_paths, "/", folder_name, "/")){
-
-      if(length(list.files(win_path, pattern = file_name_pattern)) > 0){
-        return(paste0(win_path, get_latest(list.files(win_path, pattern = file_name_pattern))))
+    for(win_path in win_paths){
+      if(file.exists(paste0(win_path, "/", folder_name, "/", file_name))){
+        return(paste0(win_path, "/", folder_name, "/", file_name))
       }
-
     }
   }
 
-  if(length(list.files(home_dir, pattern = file_name_pattern)) > 0){
-    return(paste0(home_dir, get_latest(list.files(home_dir, pattern = file_name_pattern))))
+  if(file.exists(home_dir)){
+    return(home_dir)
   }
 
   stop("Could not find the file with the GitHub API key. Please contact IT.")
