@@ -15,7 +15,6 @@ Imports:
     gh,
     methods,
     remotes,
-    stringr,
     utils,
     yaml
 Suggests: 

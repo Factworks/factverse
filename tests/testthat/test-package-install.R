@@ -8,6 +8,11 @@ test_that("Checking package installation process", {
                            repos = "http://cran.us.r-project.org",
                            upgrade = "never")
 
+  remotes::install_version(package = "dplyr",
+                           version = "1.1.0",
+                           repos = "http://cran.us.r-project.org",
+                           upgrade = "never")
+
   # we need to overwrite the functions that require api access for testing
   get_gh_pat <- function(silent = TRUE){return(list(tidyverse = NULL))}
   get_available_packages <- function(silent = TRUE){
