@@ -93,6 +93,7 @@ print.AvailablePackages <- function(x, ...){
 #' @import cli
 #' @importFrom utils compareVersion
 #' @importFrom utils installed.packages
+#' @importFrom methods is
 #' @export
 #' @examples
 #' \dontrun{
@@ -116,13 +117,32 @@ check_for_updates <- function(gh_pat = get_gh_pat(silent = TRUE),
 
     for(pkg in packages[[account]]$packages[packages[[account]]$packages %in% rownames(installed_packages)]){
       # get the latest version from GitHub
-      lastest_version <- get_latest_package_version(gh_pat = gh_pat[[account]],
+      lastest_version <- try(get_latest_package_sha(gh_pat = gh_pat[[account]],
                                                     repository_owner = account,
-                                                    repository_name = pkg)
-      installed_version <- installed_packages[pkg, "Version"]
-      if(compareVersion(lastest_version, installed_version) == 1){
+                                                    repository_name = pkg))
+      if(is(lastest_version, "try-error")){
+        cli::cli_alert_info(paste0("Could not find a version on GitHub for ",
+                                   pkg,
+                                   ". Try factverse::install_package(\"", pkg, "\")."))
+        next
+      }
+
+      installed_version <- try(get_package_sha(pkg))
+      if(is(installed_version, "try-error")){
+        cli::cli_alert_info(paste0("Could not find a SHA version in the package description of ",
+                                   pkg,
+                                   ". Did you install the package locally? ",
+                                   "Please install the latest version ",
+                                   "with factverse::install_package(\"", pkg, "\")."))
+        next
+      }
+
+      if(lastest_version != installed_version){
         result[[account]]$requires_update <- c(result[[account]]$requires_update, pkg)
-        cli::cli_alert_warning(text = paste0("A newer version for ", pkg, " is available. Install the latest version with factverse::install_package(\"", pkg, "\")."))
+        cli::cli_alert_warning(text = paste0("A newer version for ",
+                                             pkg,
+                                             " is available. Install the latest version with factverse::install_package(\"",
+                                             pkg, "\")."))
       }else{
         result[[account]]$up_to_date <- c(result[[account]]$up_to_date, pkg)
         cli::cli_alert_success(text = paste0("Your version of ", pkg, " is up to date!"))
@@ -134,36 +154,51 @@ check_for_updates <- function(gh_pat = get_gh_pat(silent = TRUE),
     return(result)
 }
 
-#' get_latest_package_version
+#' get_latest_package_sha
 #'
-#' Retrieves the latest version of an R package from the package description.
-#' Currently only supports versions of the form [0-9].[0-9].[0-9].
+#' Retrieves the latest sha of an R package from the main branch.
 #'
 #' @param gh_pat GitHub PAT to access the package list
 #' @param repository_owner name of the owner of the repository on GitHub
 #' @param repository_name name of the repository that contains the package list
-#' @param file_path path to the yaml file in the repository that contains the package list
 #' @import gh
-#' @importFrom base64enc base64decode
-#' @importFrom stringr str_extract
-#' @import cli
+#' @importFrom methods is
 #' @keywords internal
-get_latest_package_version <- function(gh_pat = get_gh_pat(silent = TRUE),
-                                       repository_owner,
-                                       repository_name,
-                                       file_path = "DESCRIPTION"){
+get_latest_package_sha <- function(gh_pat = get_gh_pat(silent = TRUE),
+                                   repository_owner,
+                                   repository_name){
 
-  package_version <- gh::gh("GET /repos/{repository_owner}/{repository_name}/contents/{file_path}",
-                            repository_owner = repository_owner,
-                            repository_name = repository_name,
-                            file_path = file_path,
-                            .token = gh_pat)[["content"]] |>
-    base64enc::base64decode() |>
-    rawToChar() |>
-    stringr::str_extract("Version:[ \\n]*([0-9]+\\.[0-9]+\\.[0-9]+)", group = 1)
-
-  return(package_version)
+  for(branch in c("main", "master")){
+    package_sha <- try(gh::gh("GET /repos/{repository_owner}/{repository_name}/git/refs/heads/{branch}",
+                              repository_owner = repository_owner,
+                              repository_name = repository_name,
+                              branch = branch,
+                              .token = gh_pat)$object$sha)
+    if(!is(package_sha, "try-error")){
+      return(package_sha)
+    }
+  }
+  stop("Could not find a version for ", repository_name, ". Try factverse::install_package(\"", repository_name, "\").")
 }
+
+#' get_package_sha
+#'
+#' Retrieves the sha of an installed R package.
+#'
+#' @param package_name name of the package
+#' @importFrom utils packageDescription
+#' @keywords internal
+#' @returns the SHA of the package
+get_package_sha <- function(package_name){
+
+  desc <- packageDescription(package_name)
+  if(is.null(desc$RemoteSha))
+    stop("Could not find a version for ", package_name, ". Did you install the package locally? ",
+         "Please install the latest version ",
+         "with factverse::install_package(\"", package_name, "\").")
+  return(desc$RemoteSha)
+}
+
 
 #' install_package
 #'
