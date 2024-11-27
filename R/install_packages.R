@@ -119,7 +119,8 @@ check_for_updates <- function(gh_pat = get_gh_pat(silent = TRUE),
       # get the latest version from GitHub
       lastest_version <- try(get_latest_package_sha(gh_pat = gh_pat[[account]],
                                                     repository_owner = account,
-                                                    repository_name = pkg))
+                                                    repository_name = pkg),
+                             silent = TRUE)
       if(is(lastest_version, "try-error")){
         cli::cli_alert_info(paste0("Could not find a version on GitHub for ",
                                    pkg,
@@ -127,7 +128,8 @@ check_for_updates <- function(gh_pat = get_gh_pat(silent = TRUE),
         next
       }
 
-      installed_version <- try(get_package_sha(pkg))
+      installed_version <- try(get_package_sha(pkg),
+                               silent = TRUE)
       if(is(installed_version, "try-error")){
         cli::cli_alert_info(paste0("Could not find a SHA version in the package description of ",
                                    pkg,
