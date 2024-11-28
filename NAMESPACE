@@ -2,6 +2,7 @@
 
 S3method(print,AvailablePackages)
 export(check_for_updates)
+export(describe_package)
 export(get_available_packages)
 export(get_gh_pat)
 export(install_essentials)

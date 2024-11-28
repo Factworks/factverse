@@ -12,11 +12,18 @@ test_that("Checking package installation process", {
                           upgrade = "never")
 
   # we need to overwrite the functions that require api access for testing
-  get_gh_pat <- function(silent = TRUE){return(list(tidyverse = NULL))}
+  get_gh_pat <- function(silent = TRUE){return(list(tidyverse = NULL,
+                                                    someotheraccount = "kjsdfgkljh"))}
   get_available_packages <- function(silent = TRUE){
     return(list(tidyverse = list(packages = c("dplyr", "tibble"),
                                  essential = c("tibble"))))
   }
+
+  # Check if we can get the package description
+  descr <- factverse::describe_package(package_name = "dplyr",
+                                       gh_pat = get_gh_pat(),
+                                       packages = get_available_packages())
+
 
   # check if essentials can be installed. This should install the latest version
   # of crayon
@@ -43,4 +50,22 @@ test_that("Checking package installation process", {
   testthat::expect_identical(to_update,
                              list(tidyverse = list(requires_update = c(),
                                                    up_to_date = c("dplyr", "tibble"))))
+
+  testthat::expect_message(factverse::install_essentials(gh_pat = get_gh_pat(),
+                                                         packages = get_available_packages()))
+
+  # check that we can pass on arguments to remotes
+  factverse::install_essentials(gh_pat = get_gh_pat(),
+                                packages = get_available_packages(),
+                                force = TRUE)
+  testthat::expect_message(factverse::install_package(package_name = "tibble",
+                                                      gh_pat = get_gh_pat(),
+                                                      packages = get_available_packages()))
+
+
+  factverse::install_package(package_name = "tibble",
+                             gh_pat = get_gh_pat(),
+                             packages = get_available_packages(),
+                             force = TRUE)
+
 })

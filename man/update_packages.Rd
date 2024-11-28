@@ -7,7 +7,8 @@
 update_packages(
   gh_pat = get_gh_pat(silent = TRUE),
   packages = get_available_packages(gh_pat = get_gh_pat(silent = TRUE), repository_name =
-    "package_list", file_path = "packages.yaml")
+    "package_list", file_path = "packages.yaml"),
+  ...
 )
 }
 \arguments{
@@ -15,6 +16,8 @@ update_packages(
 
 \item{packages}{list with the names of the packages for each repository that
 are available}
+
+\item{...}{additional arguments passed to remotes::install_github}
 }
 \description{
 Updates all installed packages with the latest version.
