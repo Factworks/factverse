@@ -26,7 +26,7 @@ get_available_packages <- function(gh_pat = get_gh_pat(silent = TRUE),
                                                 repository_owner = account,
                                                 repository_name = repository_name,
                                                 file_path = file_path,
-                                                .token = gh_pat)[["content"]] |>
+                                                .token = gh_pat[[account]])[["content"]] |>
                                            base64enc::base64decode() |>
                                            rawToChar() |>
                                            yaml::read_yaml(text = _),
@@ -175,7 +175,7 @@ get_latest_package_sha <- function(gh_pat = get_gh_pat(silent = TRUE),
                               repository_owner = repository_owner,
                               repository_name = repository_name,
                               branch = branch,
-                              .token = gh_pat)$object$sha)
+                              .token = gh_pat[[repository_owner]])$object$sha)
     if(!is(package_sha, "try-error")){
       return(package_sha)
     }
@@ -210,6 +210,7 @@ get_package_sha <- function(package_name){
 #' @param gh_pat GitHub PAT to access the package list
 #' @param packages list with the names of the packages for each repository that
 #' are available
+#' @param ... additional arguments passed to remotes::install_github
 #' @import remotes
 #' @export
 #' @examples
@@ -221,7 +222,8 @@ install_package <- function(package_name,
                             gh_pat = get_gh_pat(silent = TRUE),
                             packages = get_available_packages(gh_pat = get_gh_pat(silent = TRUE),
                                                               repository_name = "package_list",
-                                                              file_path = "packages.yaml")){
+                                                              file_path = "packages.yaml"),
+                            ...){
 
   account <- sapply(packages, function(x) package_name %in% x$packages)
   account <- names(account)[account]
@@ -229,7 +231,8 @@ install_package <- function(package_name,
     stop(paste0("Could not find an account with the following package: ", package_name, "."))
 
   remotes::install_github(repo = paste0(account, "/", package_name),
-                          auth_token = gh_pat[[account]])
+                          auth_token = gh_pat[[account]],
+                          ...)
 
 }
 
@@ -240,6 +243,7 @@ install_package <- function(package_name,
 #' @param gh_pat GitHub PAT to access the package list
 #' @param packages list with the names of the packages for each repository that
 #' are available
+#' @param ... additional arguments passed to remotes::install_github
 #' @import cli
 #' @export
 #' @examples
@@ -250,14 +254,16 @@ install_package <- function(package_name,
 install_essentials <- function(gh_pat = get_gh_pat(silent = TRUE),
                                packages = get_available_packages(gh_pat = get_gh_pat(silent = TRUE),
                                                                  repository_name = "package_list",
-                                                                 file_path = "packages.yaml")){
+                                                                 file_path = "packages.yaml"),
+                               ...){
 
   for(account in names(packages)){
     for(essential in packages[[account]]$essential){
       cli::cli_inform(paste0("Installing ", essential, ":"))
       install_package(package_name = essential,
                       gh_pat = gh_pat,
-                      packages = packages)
+                      packages = packages,
+                      ... = ...)
     }
   }
 }
@@ -269,6 +275,7 @@ install_essentials <- function(gh_pat = get_gh_pat(silent = TRUE),
 #' @param gh_pat GitHub PAT to access the package list
 #' @param packages list with the names of the packages for each repository that
 #' are available
+#' @param ... additional arguments passed to remotes::install_github
 #' @export
 #' @examples
 #' \dontrun{
@@ -278,7 +285,8 @@ install_essentials <- function(gh_pat = get_gh_pat(silent = TRUE),
 update_packages <- function(gh_pat = get_gh_pat(silent = TRUE),
                             packages = get_available_packages(gh_pat = get_gh_pat(silent = TRUE),
                                                               repository_name = "package_list",
-                                                              file_path = "packages.yaml")){
+                                                              file_path = "packages.yaml"),
+                            ...){
 
   pkg_list <- check_for_updates(gh_pat = gh_pat,
                                 packages = packages,
@@ -289,7 +297,8 @@ update_packages <- function(gh_pat = get_gh_pat(silent = TRUE),
       cli::cli_alert_info(text = paste0("Installing the latest version of ", pkg))
       install_package(package_name = pkg,
                       gh_pat = gh_pat,
-                      packages = packages)
+                      packages = packages,
+                      ... = ...)
     }
   }
 }
