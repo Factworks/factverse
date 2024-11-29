@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# factverse
+# factverse <img src="man/figures/logo.png" align="right" height="138" alt="" />
 
 The objective of the `factverse` package is to provide an easy to use,
 private package manager by building on private GitHub repositories.
