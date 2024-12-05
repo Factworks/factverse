@@ -117,7 +117,7 @@ check_for_updates <- function(gh_pat = get_gh_pat(silent = TRUE),
 
     for(pkg in packages[[account]]$packages[packages[[account]]$packages %in% rownames(installed_packages)]){
       # get the latest version from GitHub
-      lastest_version <- try(get_latest_package_sha(gh_pat = gh_pat[[account]],
+      lastest_version <- try(get_latest_package_sha(gh_pat = gh_pat,
                                                     repository_owner = account,
                                                     repository_name = pkg),
                              silent = TRUE)

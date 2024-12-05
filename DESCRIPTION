@@ -1,7 +1,7 @@
 Package: factverse
 Type: Package
 Title: Provides a basic solution to set up a private package manager with GitHub
-Version: 0.1.1
+Version: 0.1.2
 Author: Jannik H. Orzek
 Maintainer: Jannik H. Orzek <orzek@factworks.com>
 Description: factverse provides a very basic approach to maintaining a repository
