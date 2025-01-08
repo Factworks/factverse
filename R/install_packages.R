@@ -86,8 +86,6 @@ print.AvailablePackages <- function(x, ...){
 #' Checks if there are updates for any of the factverse packages.
 #'
 #' @param gh_pat GitHub PAT to access the package list
-#' @param packages list with the names of the packages for each repository that
-#' are available
 #' @param return_package_list should the list of packages be returned?
 #' @returns (optional) a list with outdated and up to date packages
 #' @import cli

@@ -14,9 +14,6 @@ check_for_updates(
 \arguments{
 \item{gh_pat}{GitHub PAT to access the package list}
 
-\item{packages}{list with the names of the packages for each repository that
-are available}
-
 \item{return_package_list}{should the list of packages be returned?}
 }
 \value{
