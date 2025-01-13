@@ -210,8 +210,9 @@ get_package_sha <- function(package_name){
 #' @param gh_pat GitHub PAT to access the package list
 #' @param packages list with the names of the packages for each repository that
 #' are available
-#' @param ... additional arguments passed to remotes::install_github
-#' @import remotes
+#' @param ... additional arguments passed to pak::pkg_install()
+#' @import pak
+#' @import withr
 #' @export
 #' @examples
 #' \dontrun{
@@ -225,15 +226,15 @@ install_package <- function(package_name,
                                                               file_path = "packages.yaml"),
                             ...){
 
+  if(length(package_name) != 1)
+    stop("Multiple packages cannot be installed. Please specify only one package.")
   account <- sapply(packages, function(x) package_name %in% x$packages)
   account <- names(account)[account]
   if(length(account) != 1)
     stop(paste0("Could not find an account with the following package: ", package_name, "."))
 
-  remotes::install_github(repo = paste0(account, "/", package_name),
-                          auth_token = gh_pat[[account]],
-                          ...)
-
+  withr::with_envvar(new = gh_pat[[account]],
+                     pak::pkg_install(pkg = paste0(account, "/", package_name)))
 }
 
 #' install_essentials
@@ -243,7 +244,7 @@ install_package <- function(package_name,
 #' @param gh_pat GitHub PAT to access the package list
 #' @param packages list with the names of the packages for each repository that
 #' are available
-#' @param ... additional arguments passed to remotes::install_github
+#' @param ... additional arguments passed to pak::pkg_install()
 #' @import cli
 #' @export
 #' @examples
@@ -275,7 +276,7 @@ install_essentials <- function(gh_pat = get_gh_pat(silent = TRUE),
 #' @param gh_pat GitHub PAT to access the package list
 #' @param packages list with the names of the packages for each repository that
 #' are available
-#' @param ... additional arguments passed to remotes::install_github
+#' @param ... additional arguments passed to pak::pkg_install()
 #' @export
 #' @examples
 #' \dontrun{

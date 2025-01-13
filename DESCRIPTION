@@ -14,7 +14,8 @@ Imports:
     cli,
     gh,
     methods,
-    remotes,
+    pak,
+    withr,
     utils,
     yaml
 Suggests: 

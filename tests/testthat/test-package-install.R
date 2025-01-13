@@ -3,13 +3,13 @@ test_that("Checking package installation process", {
 
   # install outdated version of tidyr. We will check if the functions
   # correctly pick up on the outdated version and update everything
-  remotes::install_github(repo = "https://github.com/tidyverse/dplyr",
-                          ref = "HEAD~1",
-                          upgrade = "never")
+  pak::pkg_install(pkg = "tidyverse/dplyr@v1.1.2",
+                   ask = FALSE,
+                   upgrade = FALSE)
 
-  remotes::install_github(repo = "https://github.com/tidyverse/tibble",
-                          ref = "HEAD~1",
-                          upgrade = "never")
+  pak::pkg_install(pkg = "tidyverse/tibble",
+                   ask = FALSE,
+                   upgrade = FALSE)
 
   # we need to overwrite the functions that require api access for testing
   get_gh_pat <- function(silent = TRUE){return(list(tidyverse = NULL,

@@ -18,7 +18,7 @@ The `factverse` package manager has three components:
     adapted).
 3.  The `factverse` R package. This package is publicly available on
     GitHub and can be installed and updated with
-    `remotes::install_github("factworks/factverse")`.
+    `pak::pkg_install("factworks/factverse")`.
 
 ## The API File
 
