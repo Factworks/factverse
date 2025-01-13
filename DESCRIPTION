@@ -5,7 +5,8 @@ Version: 0.1.2
 Author: Jannik H. Orzek
 Maintainer: Jannik H. Orzek <orzek@factworks.com>
 Description: factverse provides a very basic approach to maintaining a repository
-  of private packages that are hosted on GitHub.
+  of private packages that are hosted on GitHub. It uses `pak` for package
+  installation.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
