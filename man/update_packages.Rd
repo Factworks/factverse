@@ -17,7 +17,7 @@ update_packages(
 \item{packages}{list with the names of the packages for each repository that
 are available}
 
-\item{...}{additional arguments passed to remotes::install_github}
+\item{...}{additional arguments passed to pak::pkg_install()}
 }
 \description{
 Updates all installed packages with the latest version.
