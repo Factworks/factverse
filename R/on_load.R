@@ -7,6 +7,10 @@
 #' @importFrom utils packageVersion
 #' @returns nothing
 .onAttach <- function(libname, pkgname) {
+
+  if(!requireNamespace("curl", quietly = TRUE))
+    stop("Please install the packag curl first (install.packages('curl')).")
+
   packageStartupMessage(paste0("
   ___              __
 .'  _|.---.-.----.|  |_.--.--.-----.----.-----.-----.
