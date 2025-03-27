@@ -8,6 +8,7 @@
 #' @param file_path path to the yaml file in the repository that contains the package list
 #' @returns list with available packages
 #' @import gh
+#' @import curl
 #' @importFrom base64enc base64decode
 #' @importFrom methods is
 #' @export
@@ -225,7 +226,7 @@ install_package <- function(package_name,
                                                               repository_name = "package_list",
                                                               file_path = "packages.yaml"),
                             ...){
-  
+
   if(length(package_name) != 1)
     stop("You cannot use this function to install multiple package. Please specify only one package name.")
   account <- sapply(packages, function(x) package_name %in% x$packages)
