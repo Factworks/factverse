@@ -1,9 +1,25 @@
 Package: factverse
 Type: Package
 Title: Provides a basic solution to set up a private package manager with GitHub
-Version: 0.1.2
-Author: Jannik H. Orzek
-Maintainer: Jannik H. Orzek <orzek@factworks.com>
+Version: 0.1.4
+Authors@R: c(
+    person(
+      "Jannik H.", "Orzek",
+      email = "orzek@factworks.com",
+      role = c("aut", "cre")
+    ),
+    person(
+      "C. Manuel", "Bosancianu",
+      email = "bosancianu@factworks.com",
+      role = "aut",
+      comment = c(ORCID = "0000-0001-7950-9798")
+    ),
+    person(
+      "Factworks GmbH",
+      email = "info@factworks.com",
+      role = c("cph", "fnd")
+    )
+  )
 Description: factverse provides a very basic approach to maintaining a repository
   of private packages that are hosted on GitHub.
 License: MIT + file LICENSE
@@ -17,9 +33,9 @@ Imports:
     pak,
     withr,
     utils,
-    yaml
+    yaml,
+    curl
 Suggests: 
-    curl,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 RoxygenNote: 7.3.2
