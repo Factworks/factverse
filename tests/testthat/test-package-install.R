@@ -53,10 +53,10 @@ test_that("Checking package installation process", {
   testthat::expect_message(factverse::install_essentials(gh_pat = get_gh_pat(),
                                                          packages = get_available_packages()))
 
-  # check that we can pass on arguments to remotes
+  # check that we can pass on arguments to pkg
   factverse::install_essentials(gh_pat = get_gh_pat(),
                                 packages = get_available_packages(),
-                                force = TRUE)
+                                upgrade = TRUE)
   testthat::expect_message(factverse::install_package(package_name = "tibble",
                                                       gh_pat = get_gh_pat(),
                                                       packages = get_available_packages()))
@@ -65,6 +65,6 @@ test_that("Checking package installation process", {
   factverse::install_package(package_name = "tibble",
                              gh_pat = get_gh_pat(),
                              packages = get_available_packages(),
-                             force = TRUE)
+                             upgrade = TRUE)
 
 })
