@@ -235,7 +235,8 @@ install_package <- function(package_name,
     stop(paste0("Could not find an account with the following package: ", package_name, "."))
 
   withr::with_envvar(new = c("GITHUB_PAT" = gh_pat[[account]]),
-                     pak::pkg_install(pkg = paste0(account, "/", package_name)))
+                     pak::pkg_install(pkg = paste0(account, "/", package_name),
+                                      ...))
 
 }
 
